@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 
-const token = 'NjA3NjkyNDMzMDg5NzU3MjA2.XUdUDA.dERmDj_RkXj6zv7LmApGx41wEPc';
+const token = process.env.token;
 
 const PREFIX = '!';
 
