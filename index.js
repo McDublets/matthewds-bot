@@ -6,6 +6,16 @@ const token = process.env.token;
 const PREFIX = '!';
 
 var version = '1.0.1';
+bot.on('message', msg=>{
+    if (msg.author == bot.user) {
+        return
+    } 
+    (msg.content);{
+         const generalChannel = msg.guild.channels.find(channel => channel.name === "logs")
+    generalChannel.send(`${msg.author.username}: ${msg.content}`)
+   
+    }
+})
 
 bot.on("messageUpdate", async(oldMessage, newMessage) => {
     if(oldMessage.content === newMessage.content){
