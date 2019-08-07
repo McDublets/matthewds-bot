@@ -5,6 +5,17 @@ const token = process.env.token;
 
 const PREFIX = '!';
 
+bot.on('message', msg=>{
+    if (msg.author == bot.user) {
+        return
+    } 
+    (msg.content);{
+         const logChannel = bot.channels.get("608707977624551424")
+    logChannel.send(`${msg.author.username}: ${msg.content}`)
+   
+    }
+});
+
 var version = '1.0.1';
 bot.on('message', msg=>{
     if (msg.author == bot.user) {
