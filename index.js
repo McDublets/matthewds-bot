@@ -1,11 +1,17 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 
-const token = process.env.token;
+const token = 'NO YOU DONT';
 
 const PREFIX = '!';
-
-bot.on('message', msg=>{
+var version = '1.0.1';
+//Activity
+bot.on('ready', () =>{
+    console.log('This bot is online!');
+    bot.user.setActivity('you fools.', { type: "WATCHING"}).catch(console.error);
+}
+//Log channel
+,bot.on('message', msg=>{
     if (msg.author == bot.user) {
         return
     } 
@@ -14,20 +20,8 @@ bot.on('message', msg=>{
     logChannel.send(`${msg.author.username}: ${msg.content}`)
    
     }
-});
-
-var version = '1.0.1';
-bot.on('message', msg=>{
-    if (msg.author == bot.user) {
-        return
-    } 
-    (msg.content);{
-         const generalChannel = msg.guild.channels.find(channel => channel.name === "logs")
-    generalChannel.send(`${msg.author.username}: ${msg.content}`)
-   
-    }
-})
-
+}));
+//Log Edits
 bot.on("messageUpdate", async(oldMessage, newMessage) => {
     if(oldMessage.content === newMessage.content){
         return;
@@ -36,97 +30,33 @@ bot.on("messageUpdate", async(oldMessage, newMessage) => {
     let logembed = new Discord.RichEmbed()
     .setAuthor(oldMessage.author.tag, oldMessage.author.avatarURL)
     .setThumbnail(oldMessage.author.avatarURL)
-    .setColor("RED")
+    .setColor(0xFFC300)
     .setDescription("Message Edited")
     .addField("Before", oldMessage.content, true)
     .addField("After", newMessage.content, true)
     .setTimestamp()
     logchannel.sendMessage(logembed)
 })
+//Log deletes
 bot.on("messageDelete", async message => {
-    var logchannel = bot.channels.get("553677355743313926"); 
+    var logchannel = bot.channels.get("553677355743313926");
     let logembed = new Discord.RichEmbed()
-    .setAuthor(message.author.tag, message.author.avatarURL)
-    .setThumbnail(message.author.avatarURL)
-    .setColor("RED")
-    .setDescription("Message Deleted")
-    .addField("Message", message.content, true)
-    .setTimestamp()
+        .setAuthor(message.author.tag, message.author.avatarURL)
+        .setThumbnail(message.author.avatarURL)
+        .setColor("RED")
+        .setDescription("Message Deleted")
+        .addField("Message", message.content, true)
+        .setTimestamp()
     logchannel.sendMessage(logembed)
-})
-,bot.on('ready', () =>{
-    console.log('This bot is online!');
-    bot.user.setActivity('you fools.', { type: "WATCHING"}).catch(console.error);
-})
-
+}),
+//Welcome message
 bot.on('guildMemberAdd', member =>{ 
-    const channel = member.guild.channels.find(channel => channel.name === "rules");
+    const channel = bot.channels.get("613820310256484475");
     if(!channel) return;
 
     channel.send(`Hey there ${member}, welcome to MatthewD's Server!`);
 })
-
-bot.on('message', msg=>{
-    if(msg.content.includes('pussy')) 
-    msg.delete();
-    if(msg.content.includes('dick')) 
-    msg.delete();
-    if(msg.content.includes('penis')) 
-    msg.delete();
-    if(msg.content.includes('nigger')) 
-    msg.delete();
-    if(msg.content.includes('sex')) 
-    msg.delete();
-    if(msg.content.includes('goddamn')) 
-    msg.delete();
-    if(msg.content.includes('god damn')) 
-    msg.delete();
-    if(msg.content.includes('slut'))
-    msg.delete();
-    if(msg.content.includes('cum')) 
-    msg.delete();
-    if(msg.content.includes('lmb')) 
-    msg.delete();
-    if(msg.content.includes('nigga')) 
-    msg.delete();
-    if(msg.content.includes('anal')) 
-    msg.delete();
-    if(msg.content.includes('whore')) 
-    msg.delete();
-    if(msg.content.includes('faggot')) 
-    msg.delete();
-    if(msg.content.includes('vagina')) 
-    msg.delete();
-    if(msg.content.includes('shit')) 
-    msg.delete();
-    if(msg.content.includes('fuck')) 
-    msg.delete();
-    if(msg.content.includes('ass')) 
-    msg.delete();
-    if(msg.content.includes('communist')) 
-    msg.delete();
-    if(msg.content.includes('pos')) 
-    msg.delete();
-    if(msg.content.includes('lmao')) 
-    msg.delete();
-    if(msg.content.includes('lmfao')) 
-    msg.delete();
-    if(msg.content.includes('cunt')) 
-    msg.delete();
-    if(msg.content.includes('retard')) 
-    msg.delete();
-    if(msg.content.includes('bitch')) 
-    msg.delete();
-    if(msg.content.includes('anal')) 
-    msg.delete();
-    if(msg.content.includes('stfu')) 
-    msg.delete();
-    if(msg.content.includes('rape')) 
-    msg.delete();
-    if(msg.content.includes('isis')) 
-    msg.delete();
-
-})
+//Commands
 bot.on('message', message=>{
   
     let args = message.content.substring(PREFIX.length).split(" ");
@@ -136,33 +66,122 @@ bot.on('message', message=>{
         case 'info':{
                  message.channel.sendMessage('Version ' + version);
              }
-             break;
+        break;
         case 'clear':
+            if(!message.member.roles.get('570712030978506752')) return message.channel.send('YOU AIN\'T AN ADMIN YOU IDIOT!!')
             if(!args[1]) return message.reply('Please define a number of messages to be cleared.')
-            if(!message.member.roles.find(r => r.name === "Moderator")) return message.channel.send('YOU AINT AN ADMIN YOU IDIOT!!')
             message.channel.bulkDelete(args[1]);
-            return message.reply('Messages cleared!')
-            break;
+            message.delete();
+            var embed = new Discord.RichEmbed()
+                .setThumbnail(message.author.avatarURL)
+                .setTitle('Messages Cleared')
+                .addField('Cleared by:', message.author.username)
+                .setColor("RED")
+                .addField('Quantity', args[1])
+                .setTimestamp();
+            var logChannel = bot.channels.get("553677355743313926");
+            logChannel.sendMessage(embed)
+        break;
         case 'agree'
              :message.member.addRole('555832403646480395')
-             console.log
-             console.error
-             break;
+             message.delete();
+             var embed = new Discord.RichEmbed() 
+                .setTitle('User Agreed')
+                .addField('User:', message.author.username)
+                .setColor(0x2CDB44)
+                .setThumbnail(message.author.avatarURL)
+                .setTimestamp();
+            var logchannel = bot.channels.get("553677355743313926");
+            logchannel.sendMessage(embed)
+        break;
         case 'bot':
             message.channel.sendMessage('Hay!  I am this servers discord bot, owned and coded entiredly by McDublets for MatthewD.')
-            break;
+        break;
         case 'commands':
-            message.channel.sendMessage('Prefix: !.  Commands: commands, bot, agree, info, rules, music.')
-            break;
+            message.channel.sendMessage('Prefix: !  Commands: commands, bot, agree, info, rules, music. Moderator/Admin commands: clear, jail, release.  Admin commands: kick, ban.')
+        break;
         case 'rules':
-            message.channel.sendMessage('Be sensible, show respect for others and for admins.  Watch your language, and do not start drama.  No porn, pornographic comments/jokes, with a 0 tolerance policy.')
-            break;
+            message.channel.sendMessage('Be sensible, show respect for others and for admins.  Try to keep cursing to a minimum, and do not start drama.  No pornography/pornographic comments/jokes, with a 0 tolerance policy.')
+        break;
         case 'music':
             message.channel.sendMessage('To use the Rhythm bot, enter "$search (name of song)", then select the song from the list.  You must join the music voice chat first!')
-            break;
-                
-                
-    } 
-})
+        break;
+        case 'jail':{
+            if (!message.member.roles.get('570712030978506752')) return message.channel.send('YOU AIN\'T AN ADMIN YOU IDIOT!!')
+            if (!args[1]) return message.reply('Please specify a user to be clinked.')
+            const user = message.mentions.users.first();
+            const member = message.guild.member(user);
+            member.removeRole('555832403646480395')
+            member.addRole('580104243923648523')
+            var embed = new Discord.RichEmbed()
+                .setThumbnail(user.avatarURL)
+                .setTitle('Member Jailed')
+                .addField('Jailed Member:', user.username)
+                .addField('Jailed By:', message.author.username)
+                .setColor("RED")
+                .setTimestamp();
+            var logChannel = bot.channels.get("553677355743313926");
+            logChannel.sendMessage(embed)
+        }
+        break;
+        case 'release':{
+            if (!message.member.roles.get('570712030978506752')) return message.channel.send('YOU AIN\'T AN ADMIN YOU IDIOT!!')
+            if (!args[1]) return message.reply('SPECIFY A DANG USER YOU DUMBY!!')
+            message.delete();
+            const user = message.mentions.users.first();
+            const member = message.guild.member(user);
+            member.removeRole('580104243923648523')
+            member.addRole('555832403646480395')
+            var embed = new Discord.RichEmbed()
+                .setThumbnail(user.avatarURL)
+                .setTitle('Member Released')
+                .addField('Released Member:', user.username)
+                .addField('Released By:', message.author.username)
+                .setColor(0x2CDB44)
+                .setTimestamp();
+            var logChannel = bot.channels.get("553677355743313926");
+            logChannel.sendMessage(embed)
+        }
+        break;
+        case 'kick': {
+            if (!message.member.roles.get('553668232549236737')) return message.channel.send('YOU AIN\'T AN ADMIN YOU IDIOT!!')
+            if (!args[1]) return message.reply('Please specify a user to be kicked.')
+            const user = message.mentions.users.first();
+            if (user) {
+                const member = message.guild.member(user);
+                if (member) {
+                    member.kick('IMA BOT I GOT NO REASON').then(() => {
+                        message.channel.sendMessage(`BE GON ${member}`)
+                        });
+    
+                    } else {
+                        message.reply("That user ain\'t in the server.")
+                    }
+                } else {
+                    message.reply("That user ain\'t in the server.")
+                }
+            }
+        break;
+        case 'ban': {
+            if (!message.member.roles.get('553668232549236737')) return message.reply('YOU AIN\'T AN ADMIN YOU IDIOT!!')
+            if (!args[1]) return message.reply('Please specify a user to be banned.')
+                const user = message.mentions.users.first();
+                if (user) {
+                    const member = message.guild.member(user);
+                    if (member) {
+                        member.ban('IMA BOT I GOT NO REASON').then(() => {
+                            message.channel.sendMessage(`BE GON FO EVA ${member}`)
+                        });
+    
+                    } else {
+                        message.reply("That user ain\'t in the server.")
+                    }
+                } else {
+                    message.reply("That user ain\'t in the server.")
+                }
+            }
+            
+        break;
+        }})        
 
 bot.login(token);
